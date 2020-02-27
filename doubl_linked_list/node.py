@@ -5,6 +5,7 @@ class Node:
     def __init__(self, data: Union[int, float]) -> None:
         self.data = data
         self.next = None
+        self.prev = None
 
     def display_data(self) -> None:
         print(f"{self.data} ->", end=" ")

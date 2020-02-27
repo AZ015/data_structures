@@ -20,6 +20,8 @@ class DoublyLinkedList:
         new_node = Node(data)
         if self.is_empty():
             self.last = new_node
+        else:
+            self.first.prev = new_node
         new_node.next = self.first
         self.first = new_node
         self._size += 1
@@ -27,22 +29,25 @@ class DoublyLinkedList:
     def insert_last(self, data: Union[int, float]) -> None:
         new_node = Node(data)
         if self.is_empty():
-            self.first = new_node
+            self.last = new_node
+        else:
+            self.last.next = new_node
+        new_node.prev = self.last.next
         self.last.next = new_node
         self.last = new_node
         self._size += 1
 
-    def insert_after(self, data: Union[int, float], new_node: Node) -> Union[str, Node]:
+    def insert(self, new_node: Node) -> Union[str, Node]:
         current = self.first
-        previous = self.first
-        while current.data != data:
-            if current.next is None:
-                return "Can't insert"
-            else:
-                previous = current
-                current = current.next
-        previous.next = new_node
-        new_node.next = current
+        if current == self.last:
+            new_node.next = None
+            self.last = new_node
+        else:
+            new_node.next = current.next
+            current.next.prev = new_node
+
+        new_node.prev = current
+        current.next = new_node
         self._size += 1
         return current
 
@@ -66,7 +71,19 @@ class DoublyLinkedList:
         tmp = self.first
         if self.first.next is None:
             self.last = None
+        else:
+            self.first.next.previous = None
         self.first = self.first.next
+        self._size -= 1
+        return tmp
+
+    def remove_last(self) -> None:
+        tmp = self.last
+        if self.first.next is None:
+            self.first = None
+        else:
+            self.last.previous.next = None
+        self.last = self.last.previous
         self._size -= 1
         return tmp
 
@@ -85,8 +102,10 @@ if __name__ == '__main__':
     lst.insert_first(12)
     lst.insert_first(13)
     lst.insert_first(14)
-    lst.insert_after(13, Node(123))
+    lst.insert(Node(145))
     lst.insert_first(15)
-    lst.remove(13)
-    for item in lst:
-        print(item.data)
+    lst.display_list()
+
+    # lst.remove(13)
+    # for item in lst:
+    #     print(item.data)
